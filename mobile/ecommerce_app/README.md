@@ -1,64 +1,36 @@
-# 🛒 Domain Layer Refactoring for eCommerce App
+# Domain Layer – eCommerce App
+Designing the domain layer for an eCommerce mobile app using Clean Architecture and Test-Driven Development (TDD) principles.
 
-This project focuses on **refactoring the domain layer** of an eCommerce mobile application
- using the principles of **Clean Architecture** and **Test-Driven Development (TDD)**.
-  The goal is to create a robust and scalable foundation for managing products within the app, supporting full CRUD (Create, Read, Update, Delete) operations.
+This layer is independent of any framework or external library and focuses purely on business logic and application rules.
 
----
+## Features / Use Cases
+Each use case is implemented as a callable class. These use cases interact only with abstract repositories and return either domain entities or results.
 
-## 🚀 Objectives
+### InsertProduct
+- Adds a new product to the app.
 
-- Apply Clean Architecture principles to the domain layer.
-- Create and manage product entities.
-- Implement core use cases as callable classes.
-- Establish a maintainable and testable business logic layer.
+- Accepts a Product entity as input.
 
----
+- Interacts with the ProductRepository.
 
-## 🧱 Domain Layer Features
+### UpdateProduct
+- Updates an existing product's details.
 
-### ✅ Entity: `Product`
-A single product in the eCommerce platform containing the following attributes:
-- `id` (String)
-- `name` (String)
-- `description` (String)
-- `imageUrl` (String)
-- `price` (double)
+- Requires a full Product entity with an existing ID.
 
-### ✅ Use Cases (Callable Classes)
+- Interacts with the ProductRepository.
 
-| Use Case                 |         Description  ----------------------------------------------------------------------------|
-| `ViewAllProductsUsecase` | Retrieves a list of all davailableproducts.  
-| `ViewProductUsecase`     | Fetches a specific product by ID.   
-| `CreateProductUsecase`   | Accepts a new `Product` object and adds it to the product list. |
-| `UpdateProductUsecase`   | Updates the details of an existing product.  
-| `DeleteProductUsecase`   | Deletes a product by its ID. 
+### DeleteProduct
+- Deletes a product from the list.
 
-                                               
+- Accepts a int ID to identify the product.
 
-All use cases follow the callable class convention and extend from a common `UseCase` base class (based on course material).
+- Interacts with the ProductRepository.
 
----
+### GetProduct
+- Retrieves details of a specific product.
 
-## 🧠 Architecture
+- Accepts a int ID.
 
-This project follows **Clean Architecture** principles:
-
-```
-lib
-┣ 📂domain
-┃ ┣ 📂entities
-┃ ┃ ┗ 📜product.dart
-┃ ┣ 📂repositories
-┃ ┃ ┗ 📜product_repository.dart
-┃ ┗ 📂usecases
-┃   ┣ 📜create_product_usecase.dart
-┃   ┣ 📜delete_product_usecase.dart
-┃   ┣ 📜update_product_usecase.dart
-┃   ┣ 📜view_all_products_usecase.dart
-┃   ┗ 📜view_product_usecase.dart
-```
-
-
-
+- Returns a Product entity if found.
 
