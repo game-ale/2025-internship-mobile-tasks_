@@ -3,7 +3,7 @@ import '../../../../core/error/failures.dart';
 import '../entities/product.dart';
 import '../repositories/product_repository.dart';
 
-class DeleteProductUsecase {
+class DeleteProductUsecase  {
   final ProductRepository repository;
   const DeleteProductUsecase(this.repository);
 

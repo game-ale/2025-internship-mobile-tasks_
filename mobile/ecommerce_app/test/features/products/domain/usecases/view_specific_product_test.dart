@@ -29,7 +29,7 @@ void main() {
     test('should return product by ID via the repository', () async {
       when(mockProductRepository.getProductById(productId)).thenAnswer((_) async => Right(expectedProduct));
 
-      final result = await usecase(productId);
+      final result = await usecase(productId.toString()); 
 
       expect(result, equals(expectedProduct));
       verify(mockProductRepository.getProductById(productId)).called(1);

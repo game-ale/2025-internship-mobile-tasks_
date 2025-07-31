@@ -1,13 +1,15 @@
 import 'package:dartz/dartz.dart';
+import '../../../../core/usecases/usecase.dart';
 import '../../../../core/error/failures.dart';
 import '../entities/product.dart';
 import '../repositories/product_repository.dart';
 
-class UpdateProductUsecase {
+class UpdateProductUsecase  implements Usecase<Product,Product>{
   final ProductRepository repository;
   const UpdateProductUsecase(this.repository);
 
-  Future<Either<Failure, Product>> call(Product product) {
-    return repository.updateProduct(product);
+@override
+  Future<Either<Failure, Product>> call(Product product) async {
+    return await repository.updateProduct(product);
   }
 }

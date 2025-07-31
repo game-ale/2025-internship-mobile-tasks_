@@ -4,11 +4,14 @@ import 'package:ecommerce_app/features/products/domain/repositories/product_repo
 import 'package:ecommerce_app/features/products/domain/usecases/view_all_products.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:ecommerce_app/core/usecases/usecase.dart';
+
 
 class MockProductRepository extends Mock implements ProductRepository {}
 
 void main() {
-  late ViewAllProductsUsecase usecase;
+ late ViewAllProductsUsecase usecase;
+
   late MockProductRepository mockProductRepository;
 
   setUp(() {
@@ -36,10 +39,10 @@ void main() {
 
     test('should return all products via the repository', () async {
       when(mockProductRepository.getAllProducts()).thenAnswer((_) async => Right(products));
-          //  when(mockProductRepository.updateProduct(updatedProduct))
-          // .thenAnswer((_) async => Right(updatedProduct))
 
-      final result = await usecase();
+      final result = await usecase(const NoParams());
+      // no params is not in the class 
+
 
       expect(result, equals(products));
       verify(mockProductRepository.getAllProducts()).called(1);
