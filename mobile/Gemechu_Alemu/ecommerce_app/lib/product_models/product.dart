@@ -1,4 +1,4 @@
-import 'package:task6/components/product_category.dart';
+import 'package:task7/components/product_category.dart';
 
 import '../components/rating.dart';
 

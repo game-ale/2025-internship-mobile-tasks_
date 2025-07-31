@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:task6/components/product_category.dart';
+import 'package:task7/components/product_category.dart';
 import '../common/themes/app_colors.dart';
 import '../common/themes/text_styles.dart';
-import 'package:task6/product_models/product_manager.dart';
+import 'package:task7/product_models/product_manager.dart';
 //import 'package:task6/product_models/sample_products.dart';
 import '../common/widgets/input_inserted.dart';
 import '../common/widgets/input_type_name.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:task6/pages/add_update_page.dart';
-import 'package:task6/components/product_card.dart';
-import 'package:task6/components/product_category.dart';
-import 'package:task6/components/rating.dart';
-import 'package:task6/pages/search_page.dart';
+import 'package:task7/pages/add_update_page.dart';
+import 'package:task7/components/product_card.dart';
+import 'package:task7/components/product_category.dart';
+import 'package:task7/components/rating.dart';
+import 'package:task7/pages/search_page.dart';
 import '../product_models/product_manager.dart';
 
 import '../product_models/product.dart';

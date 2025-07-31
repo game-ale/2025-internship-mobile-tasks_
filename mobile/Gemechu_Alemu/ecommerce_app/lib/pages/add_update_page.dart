@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task6/common/themes/app_colors.dart';
-import 'package:task6/common/themes/text_styles.dart';
+import 'package:task7/common/themes/app_colors.dart';
+import 'package:task7/common/themes/text_styles.dart';
 import '../common/widgets/input_inserted.dart';
 import '../common/widgets/input_type_name.dart';
 
