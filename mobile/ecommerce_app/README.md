@@ -1,34 +1,27 @@
-🛜 Implement Network Info for Ecommerce App\
+📦 Implement Local Data Source
+This task focuses on implementing a local data source for the Ecommerce app. The local data source allows the app to store and retrieve products locally, ensuring that users can view cached data when offline or while new data is loading from the server.
 
-📌 ***Overview***
+🎯 Objectives
+Enable offline support by caching product data.
 
-This task enhances the existing Ecommerce mobile app by adding network connectivity detection and integrating it into the product 
+Improve app performance using locally stored data.
 
-repository. The goal is to improve reliability by checking for network availability before performing remote operations.
+Keep the data layer modular and aligned with Clean Architecture principles.
 
-✨ ***Features***
-Implemented NetworkInfo and NetworkInfoImpl classes.
+🚀 Requirements
+Implement the interface
 
-Integrated InternetConnectionChecker for real-time connection status.
+Create an implementation of ProductLocalDataSource.
 
-Added network checks in the repository before fetching products.
+Use SharedPreferences
 
-Improved error handling for offline scenarios.
+Store and retrieve product data locally using SharedPreferences.
 
-🛠️ **Implementation Details**
+Follow Clean Architecture
 
-Created network_info.dart
+Keep local data logic within the data layer.
 
-Defined NetworkInfo (abstract class).
+Testing
 
-Implemented NetworkInfoImpl using InternetConnectionChecker.
+Write unit tests to ensure correct behavior of caching and retrieving products.
 
-Added isConnected getter to check connection status.
-
-Repository Integration
-
-Injected NetworkInfo into the product repository constructor.
-
-Verified connectivity before making API calls.
-
-Added error handling for no-network cases.
