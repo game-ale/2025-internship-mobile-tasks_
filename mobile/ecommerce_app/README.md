@@ -1,44 +1,34 @@
-# Ecommerce Flutter App — Clean Architecture
-This project is a sample Ecommerce app built using Flutter and structured following Clean Architecture principles. It demonstrates how to organize your codebase with:
+🛜 Implement Network Info for Ecommerce App\
 
-Contracts (Abstract classes/interfaces)
+📌 ***Overview***
 
-Repository pattern
+This task enhances the existing Ecommerce mobile app by adding network connectivity detection and integrating it into the product 
 
-Local & Remote Data Sources
+repository. The goal is to improve reliability by checking for network availability before performing remote operations.
 
-Dependency Inversion
+✨ ***Features***
+Implemented NetworkInfo and NetworkInfoImpl classes.
 
-Network connection checking
+Integrated InternetConnectionChecker for real-time connection status.
 
-## Architecture Layers
-### domain/
-Defines the contracts and business logic.
+Added network checks in the repository before fetching products.
 
-entities/ – Plain Dart classes for your core objects (Product).
+Improved error handling for offline scenarios.
 
-repositories/ – Abstract class (contract) defining the required repository methods.
+🛠️ **Implementation Details**
 
-usecases/ – Classes for business rules (e.g., GetAllProductsUseCase).
+Created network_info.dart
 
-### data/
-Contains data sources, models, and the implementation of the repository.
+Defined NetworkInfo (abstract class).
 
-datasources/
+Implemented NetworkInfoImpl using InternetConnectionChecker.
 
-remote_product_data_source.dart – Fetches data from APIs.
+Added isConnected getter to check connection status.
 
-local_product_data_source.dart – Fetches/saves data locally.
+Repository Integration
 
-models/ – DTOs used for JSON conversion.
+Injected NetworkInfo into the product repository constructor.
 
-repositories/ – Implements the contract using data sources.
+Verified connectivity before making API calls.
 
-### core/
-platform/
-
-network_info.dart – Checks internet connection.
-
-error/
-
-exceptions.dart, failures.dart – Error handling helpers.
+Added error handling for no-network cases.
