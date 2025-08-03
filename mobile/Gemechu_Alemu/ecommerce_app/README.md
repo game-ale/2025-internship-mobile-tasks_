@@ -76,7 +76,9 @@ lib/
 1. **Clone the repository**:
 ```
    git clone https://github.com/game-ale/2025-internship-mobile-tasks_.git
+   
    cd 2025-internship-mobile-tasks_
+
 ```
 Install dependencies:
 ```
