@@ -24,12 +24,10 @@ class ProductRepositoryImpl implements ProductRepository {
     if (await networkInfo.isConnected) {
       try {
         final remoteProducts = await remoteDataSource.getAllProducts();
-        await localDataSource.cacheProducts(
-          remoteProducts,
-        ); // Cache list locally
+        await localDataSource.cacheProducts(remoteProducts);
         return Right(remoteProducts);
       } catch (e) {
-        return const Left(ServerFailure('Server error '));
+        return const Left(ServerFailure('Server error'));
       }
     } else {
       try {
@@ -42,12 +40,11 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, Product>> getProductById( int id) async {
-    
+  Future<Either<Failure, Product>> getProductById(int id) async {
     if (await networkInfo.isConnected) {
       try {
         final product = await remoteDataSource.getProductById(id);
-        await localDataSource.cacheProduct(product as ProductModel);
+        await localDataSource.cacheProduct(product);
         return Right(product);
       } catch (e) {
         return const Left(ServerFailure('Server error while fetching product'));
@@ -66,9 +63,10 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<Either<Failure, Product>> createProduct(Product product) async {
     if (await networkInfo.isConnected) {
       try {
-        final createdProduct = await remoteDataSource.createProduct(product);
-        await localDataSource.cacheProduct(createdProduct as ProductModel);
-        return Right(createdProduct);
+        final model = ProductModel.fromEntity(product);
+        await remoteDataSource.createProduct(model);
+        await localDataSource.cacheProduct(model);
+        return Right(model);
       } catch (e) {
         return const Left(ServerFailure('Failed to create product'));
       }
@@ -81,9 +79,10 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<Either<Failure, Product>> updateProduct(Product product) async {
     if (await networkInfo.isConnected) {
       try {
-        final updatedProduct = await remoteDataSource.updateProduct(product);
-        await localDataSource.cacheProduct(updatedProduct as ProductModel);
-        return Right(updatedProduct);
+        final model = ProductModel.fromEntity(product);
+        await remoteDataSource.updateProduct(model);
+        await localDataSource.cacheProduct(model);
+        return Right(model);
       } catch (e) {
         return const Left(ServerFailure('Failed to update product'));
       }
@@ -93,12 +92,13 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, Product>> deleteProduct(int id) async {
+  Future<Either<Failure, Unit>> deleteProduct(int id) async {
+    // (failure , unit) is not override (failure ,product)
     if (await networkInfo.isConnected) {
       try {
-        final deletedProduct = await remoteDataSource.deleteProduct(id);
+        await remoteDataSource.deleteProduct(id);
         await localDataSource.clearCache();
-        return Right(deletedProduct);
+        return const Right(unit); // Return Unit instead of Product
       } catch (e) {
         return const Left(ServerFailure('Failed to delete product'));
       }

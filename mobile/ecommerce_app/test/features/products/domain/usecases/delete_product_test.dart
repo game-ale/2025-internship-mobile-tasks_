@@ -22,7 +22,7 @@ void main() {
 
     test('should delete product successfully', () async {
       when(mockProductRepository.deleteProduct(productId))
-          .thenAnswer((_) async => Right(productId as Product)); 
+          .thenAnswer((_) async => Right(productId as Unit)); 
 
       final result = await usecase(productId);
 
