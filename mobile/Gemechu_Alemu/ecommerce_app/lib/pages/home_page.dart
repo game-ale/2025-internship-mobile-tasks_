@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:task7/pages/add_update_page.dart';
-import 'package:task7/components/product_card.dart';
-import 'package:task7/components/product_category.dart';
-import 'package:task7/components/rating.dart';
-import 'package:task7/pages/search_page.dart';
+import '../components/product_card.dart';
+import '../components/product_category.dart';
+import '../components/rating.dart';
 import '../product_models/product_manager.dart';
-
 import '../product_models/product.dart';
-// Theme files
-import '../common/themes/app_colors.dart';
 import '../common/themes/text_styles.dart';
-// Widget files
+import '../common/themes/app_colors.dart';
 import '../common/widgets/icons_box.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Product product = Product(
-      name: "Derby Leather Shoe",
+      name: "Myrunway",
       description:
-          "A derby leather shoe is a classic and versatile footwear option characterized by its open lacing system, where the shoelace eyelets are sewn on top of the vamp (the upper part of the shoe). This design feature provides a more relaxed and casual look compared to the closed lacing system of oxford shoes. Derby shoes are typically made of high-quality leather, known for its durability and elegance, making them suitable for both formal and casual occasions. With their timeless style and comfortable fit, derby leather shoes are a staple in any well-rounded wardrobe.",
-      price: 120.0,
+          "my run way shoe with a sleek design, perfect for formal or smart-casual wear.",
+      price: 50.0,
       rating: Rating.good,
-      imageURL: 'assets/shoes.jpg',
-      productCategory: ProductCategory.male_shoes,
+      imageURL: 'assets/footwear.png',
+      productCategory: ProductCategory.female_shoes,
     );
 
     final productManager = ProductManager();
@@ -96,10 +91,7 @@ class HomePage extends StatelessWidget {
                   Text("Available Products", style: AppTextStyles.bigheading),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SearchPage()),
-                      );
+                      Navigator.pushNamed(context, "/searchPage");
                     },
                     child: IconsBox(
                       child: Icon(Icons.search, color: AppColors.borderPrimary),
@@ -122,10 +114,7 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddUpdatePage()),
-          );
+          Navigator.pushNamed(context, "/addUpdatePage", arguments: "add");
         },
         shape: CircleBorder(),
         backgroundColor: AppColors.secondary,

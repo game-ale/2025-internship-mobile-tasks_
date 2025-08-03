@@ -1,4 +1,4 @@
-name: task7
+name: ecommerce_app
 description: "A new Flutter project."
 publish_to: 'none'
 
@@ -12,18 +12,18 @@ dependencies:
     sdk: flutter
   intl: ^0.20.2
   cupertino_icons: ^1.0.8
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
 
   assets:
     - assets/
-    
 
   fonts:
     - family: Poppins
@@ -33,8 +33,7 @@ flutter:
         - asset: fonts/Poppins-SemiBold.ttf
           weight: 600
         - asset: fonts/Poppins-Bold.ttf
-          weight: 700
+          weight: 900
     - family: Sora
       fonts:
         - asset: fonts/Sora-Regular.ttf
-          weight: 400

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:task7/components/product_category.dart';
+import '../common/widgets/input_inserted.dart';
 import '../common/themes/app_colors.dart';
 import '../common/themes/text_styles.dart';
-import 'package:task7/product_models/product_manager.dart';
-//import 'package:task6/product_models/sample_products.dart';
-import '../common/widgets/input_inserted.dart';
 import '../common/widgets/input_type_name.dart';
-import '../components/product_card.dart';
-
+import 'package:ecommerce_app/product_models/product_manager.dart';
+import 'package:ecommerce_app/components/product_category.dart';
+import 'package:ecommerce_app/components/product_card.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -16,7 +14,8 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends State<SearchPage>  {
+// class decration must have body
   ProductCategory? _selectedCategory;
 
   @override
@@ -96,6 +95,7 @@ class _SearchPageState extends State<SearchPage> {
                 selectedCategory: _selectedCategory,
                 onChanged: (value) {
                   setState(() {
+                    // setState is not defiend
                     _selectedCategory = value;
                   });
                 },
@@ -110,7 +110,7 @@ class _SearchPageState extends State<SearchPage> {
               SizedBox(height: 50),
               SizedBox(
                 width: double.infinity,
-                height: 25,
+                height: 32,
                 child: TextButton(
                   onPressed: () {},
                   style: TextButton.styleFrom(

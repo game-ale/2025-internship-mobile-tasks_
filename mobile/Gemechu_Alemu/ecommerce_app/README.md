@@ -1,47 +1,36 @@
-# 🛍️ Simple E-Commerce Flutter App
+# 🛍️ Flutter eCommerce App – Navigation & Routing
 
-This project is a basic Flutter mobile application designed to demonstrate
- **navigation and routing** features in an e-commerce context. 
- Users can **view**, **create**, **update**, and **delete** products.
+This project is a simple Flutter-based eCommerce mobile application that demonstrates clean **navigation and routing** practices. Users can **create**, **view**, **edit**, and **delete** products using smooth transitions and named routes.
 
-## 📱 App Features
+---
 
-- ✅ **Home Screen** – Displays a list of all products.
+## 📱 Features
 
-- ✅ **Product Details Screen** – View detailed information about a selected product.
+### ✅ Core Screens
+- **Home Screen**: Displays a list of all products.
+- **Product Details Screen**: Shows full details of a selected product.
+- **Add/Edit Product Screen**: Allows users to add a new product or edit an existing one.
 
-- ✅ **Add/Edit Product Screen** – Create a new product or edit an existing one.
+### 🚀 Navigation Features
+- **Named Routes**: Navigation is managed via clearly defined route names for maintainability.
+- **Smooth Animations**: Custom page transitions enhance the user experience.
+- **Data Passing**: Product data is passed between screens for creation and editing.
+- **Back Navigation**: The back button behavior is handled gracefully and predictably.
 
-- ✅ **Named Routing** – Uses Flutter’s named routes for clean navigation.
+---
 
-- ✅ **Data Passing Between Screens** – Product data is passed seamlessly between screens.
+## 🧭 Route Structure
 
-- ✅ **Navigation Animations** – Smooth transitions enhance user experience.
+| Screen                | Route Name           |
+|----------------------|----------------------|
+| Home Screen          | `/`                  |
+| Product Details      | `/product-details`   |
+| Add/Edit Product     | `/edit-product`      |
 
-- ✅ **Back Navigation Handling** – Proper back button behavior across screens.
+---
 
+## 📂 Project Structure
 
-## 🚀 Getting Started
-### 1. Clone the Repository
-
-```
-git clone https://github.com/game-ale/flutter-ecommerce-navigation.git
-cd flutter-ecommerce-navigation
-```
-2. Install Dependencies
-```
-flutter pub get
-```
-3. Run the App
-
-```
-flutter run
-```
-Make sure a device/emulator is connected before running the app.
-
-📂 Project Structure
-
-```
 lib/
 ┣ 📂common
 ┃ ┣ 📂themes
@@ -66,47 +55,45 @@ lib/
 ┃ ┣ 📜product.dart
 ┃ ┗ 📜sample_products.dart
 ┗ 📜main.dart
+
+
+
+---
+
+## 🛠️ How to Run
+
+1. **Clone the repository**:
+```
+   git clone https://github.com/game-ale/2025-internship-mobile-tasks_.git
+   cd 2025-internship-mobile-tasks_
+```
+Install dependencies:
+```
+flutter pub get
+Run the app:
 ```
 
-🔄 Navigation Overview
-From	To	Trigger
-Home Screen	Product Detail	Tap on product card
-Home Screen	Add Product	Tap "Add" button
-Product Detail	Edit Product	Tap "Edit" icon
-Add/Edit Screen	Back to Home	Save or press back button
+📌 Key Concepts Implemented
+Navigator.pushNamed & Navigator.pop
 
-Named routes are used throughout to ensure a maintainable and scalable codebase.
+onGenerateRoute and custom route logic
 
-✨ Screenshots
+Data transfer via constructor and ModalRoute.of(context)
 
+Back navigation via WillPopScope and system back button
 
-
-### 🏠 Home Screen
-![Home Screen](assets/homepage.png)
-
-### 📄 Product Detail Screen
-![Product Detail](assets/homepage3.png)
-
-### ➕ Add/Edit Product Screen
-![Add/Edit Screen](assets/homepage1.png)
-
-### search of product 
-![search of product](assets/homepage2.png)
+## Screenshots
+Home Screen	Product Form	Product Details
 
 
-📘 Additional Notes
-The app uses in-memory product data; no external database is used.
+### Home Screen
+![Home Screen](screenshots/home.png)
 
-Navigation transitions are implemented using PageRouteBuilder with animations.
+### add product
+![add product](screenshots/home1.png)
 
-Designed with Flutter best practices in mind for readability and scalability.
+### Product Details
+![Product Details](screenshots/homepage3.png)
 
-
-
-
-
-
-
-
-
-
+### update Product
+![update Products](screenshots/home3.png)

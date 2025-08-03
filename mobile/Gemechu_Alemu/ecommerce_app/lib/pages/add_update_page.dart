@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:task7/common/themes/app_colors.dart';
-import 'package:task7/common/themes/text_styles.dart';
+import '../common/themes/app_colors.dart';
+import '../common/themes/text_styles.dart';
 import '../common/widgets/input_inserted.dart';
 import '../common/widgets/input_type_name.dart';
+import '../components/photos_taker.dart';
 
 class AddUpdatePage extends StatefulWidget {
-  const AddUpdatePage({super.key});
+  const AddUpdatePage({super.key, required this.pageType});
+  final String pageType;
 
   @override
   State<AddUpdatePage> createState() => _AddUpdatePageState();
@@ -15,7 +17,6 @@ class _AddUpdatePageState extends State<AddUpdatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(30),
@@ -39,32 +40,15 @@ class _AddUpdatePageState extends State<AddUpdatePage> {
                     Expanded(
                       child: Center(
                         child: Text(
-                          "Add Product",
+                          "${widget.pageType} Product",
                           style: AppTextStyles.addProductText,
                         ),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
-                Container(
-                  width: double.infinity,
-                  height: 180,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: AppColors.borderPrimary,
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Icon(Icons.image_outlined, size: 36),
-                        Text('upload image', style: AppTextStyles.bodyText),
-                      ],
-                    ),
-                  ),
-                ),
-
+                SizedBox(height: 30),
+                ImagePickerContainer(),
                 InputTypeName(name: "name"),
                 InputInserted(),
                 InputTypeName(name: "category"),
@@ -78,14 +62,19 @@ class _AddUpdatePageState extends State<AddUpdatePage> {
                   width: double.infinity,
                   height: 50,
                   child: TextButton(
-                    onPressed: () {},
-                    child: Text("ADD", style: AppTextStyles.updateButton),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/");
+                    },
                     style: TextButton.styleFrom(
                       backgroundColor: AppColors.secondary,
                       padding: EdgeInsets.all(16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
+                    ),
+                    child: Text(
+                      widget.pageType.toUpperCase(),
+                      style: AppTextStyles.updateButton,
                     ),
                   ),
                 ),
@@ -94,7 +83,9 @@ class _AddUpdatePageState extends State<AddUpdatePage> {
                   width: double.infinity,
                   height: 50,
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     child: Text("DELETE", style: AppTextStyles.deleteButton),
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.all(16),

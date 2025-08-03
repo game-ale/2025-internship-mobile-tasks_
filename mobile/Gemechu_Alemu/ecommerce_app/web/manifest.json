@@ -1,6 +1,6 @@
 {
-    "name": "task6",
-    "short_name": "task6",
+    "name": "task_6",
+    "short_name": "task_6",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

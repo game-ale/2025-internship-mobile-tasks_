@@ -1,7 +1,7 @@
+import 'package:ecommerce_app/components/product_category.dart';
 import 'package:flutter/material.dart';
-import 'package:task7/common/themes/app_colors.dart';
-import 'package:task7/common/themes/text_styles.dart';
-import 'package:task7/components/product_category.dart';
+import '../common/themes/app_colors.dart';
+import '../common/themes/text_styles.dart';
 import '../product_models/product.dart';
 
 class DetailsPage extends StatelessWidget {
@@ -85,13 +85,12 @@ class DetailsPage extends StatelessWidget {
                           itemCount: 7,
                           itemBuilder: (context, index) {
                             final number = 39 + index;
-                            final isTarget = index == 2; 
                             return Container(
                               width: 60,
                               height: 60,
                               margin: EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: isTarget ?  AppColors.secondary : Colors.white,
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(10),
                                 boxShadow: [
                                   BoxShadow(
@@ -104,12 +103,9 @@ class DetailsPage extends StatelessWidget {
                               ),
                               alignment: Alignment.center,
                               child: Text(
-                                  number.toString(),
-                                  style: AppTextStyles.cardProductName.copyWith(
-                                  color: index == 2 ? Colors.white : Colors.black, 
-  ),
-),
-
+                                number.toString(),
+                                style: AppTextStyles.cardProductName,
+                              ),
                             );
                           },
                         ),
@@ -134,7 +130,9 @@ class DetailsPage extends StatelessWidget {
                     width: 152,
                     height: 50,
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                       child: Text("DELETE", style: AppTextStyles.deleteButton),
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.all(16),
@@ -149,7 +147,13 @@ class DetailsPage extends StatelessWidget {
                     width: 152,
                     height: 50,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          "/addUpdatePage",
+                          arguments: "update",
+                        );
+                      },
                       child: Text("UPDATE", style: AppTextStyles.updateButton),
                       style: TextButton.styleFrom(
                         backgroundColor: AppColors.secondary,
@@ -169,4 +173,3 @@ class DetailsPage extends StatelessWidget {
     );
   }
 }
-

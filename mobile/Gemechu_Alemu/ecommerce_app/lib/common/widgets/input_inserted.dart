@@ -10,11 +10,11 @@ class InputInserted extends StatelessWidget {
     return Container(
       height:
           height ??
-          50, // Use Container instead of SizedBox for more flexibility
+          50, 
       child: TextField(
-        expands: true, // <- This makes TextField expand to the parent's height
-        maxLines: null, // Required when using expands
-        minLines: null, // Required when using expands
+        expands: true, 
+        maxLines: null, 
+        minLines: null, 
         decoration: InputDecoration(
           filled: true,
           fillColor: AppColors.borderPrimary,
