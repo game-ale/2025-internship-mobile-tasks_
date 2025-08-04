@@ -1,52 +1,61 @@
 import 'package:dartz/dartz.dart';
+import 'package:ecommerce_app/core/error/failures.dart';
 import 'package:ecommerce_app/features/products/domain/entities/product.dart';
 import 'package:ecommerce_app/features/products/domain/repositories/product_repository.dart';
 import 'package:ecommerce_app/features/products/domain/usecases/view_all_products.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:ecommerce_app/core/usecases/usecase.dart';
+import 'package:mocktail/mocktail.dart';
 
-
+/// Creates a mock version of the ProductRepository for testing purposes.
 class MockProductRepository extends Mock implements ProductRepository {}
 
 void main() {
- late ViewAllProductsUsecase usecase;
+  late ViewAllProductsUsecase usecase;
+  late MockProductRepository mockRepository;
 
-  late MockProductRepository mockProductRepository;
+  const List<Product> testProducts = [];
 
   setUp(() {
-    mockProductRepository = MockProductRepository();
-    usecase = ViewAllProductsUsecase(mockProductRepository);
+    mockRepository = MockProductRepository();
+    usecase = ViewAllProductsUsecase(mockRepository);
+
+    // Provide a default Product instance as a fallback for mocktail
+    registerFallbackValue(
+      Product(id: '0', name: '', price: 0.0, description: '', imageUrl: ''),
+    );
   });
 
   group('ViewAllProductsUsecase', () {
-    final products = [
-      const Product(
-        id: 1,
-        name: 'Sneakers',
-        description: 'A comfortable running shoe',
-        price: 99.99,
-        imageUrl: 'https://example.com/shoe1.jpg',
-      ),
-      const Product(
-        id: 2,
-        name: 'Boots',
-        description: 'Durable winter boots',
-        price: 149.99,
-        imageUrl: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.daily.co%2Fblog%2Fusing-flutter-for-cross-platform-video-application-development%2F&psig=AOvVaw0Fs42TVAznBJ0c9tUVbLLi&ust=1753863978663000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCIC5ktHS4Y4DFQAAAAAdAAAAABAE',
-      ),
-    ];
+    test(
+      'invokes getAllProducts from the repository and yields a product list',
+      () async {
+        // Setup the mock to return a successful result
+        when(
+          () => mockRepository.getAllProducts(),
+        ).thenAnswer((_) async => const Right(testProducts));
 
-    test('should return all products via the repository', () async {
-      when(mockProductRepository.getAllProducts()).thenAnswer((_) async => Right(products));
+        // Run the usecase
+        final result = await usecase.call();
 
-      final result = await usecase(const NoParams());
-      // no params is not in the class 
+        // Confirm that the result matches the expected product list
+        expect(result, equals(const Right(testProducts)));
+        verify(() => mockRepository.getAllProducts()).called(1);
+      },
+    );
 
+    test('returns a Failure if the repository encounters an error', () async {
+      // Setup the mock to return a failure
+      final failure = const ServerFailure('Failed to fetch products');
+      when(
+        () => mockRepository.getAllProducts(),
+      ).thenAnswer((_) async => Left(failure));
 
-      expect(result, equals(products));
-      verify(mockProductRepository.getAllProducts()).called(1);
-      verifyNoMoreInteractions(mockProductRepository);
+      // Run the usecase
+      final result = await usecase.call();
+
+      // Ensure the result is a failure and the method was called once
+      expect(result, equals(Left(failure)));
+      verify(() => mockRepository.getAllProducts()).called(1);
     });
   });
 }

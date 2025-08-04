@@ -1,30 +1,43 @@
+import 'dart:convert';
+
 import 'package:ecommerce_app/features/products/data/models/product_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../../../fixtures/fixture_reader.dart';
+
 void main() {
-   var productModel = const ProductModel(
-    id: 1,
-    name: 'Test Product',
-    description: 'This is a test product',
-    price: 49.99,
-    imageUrl: 'https://example.com/image.jpg',
-  );
+  String productJson = fixture('product');
 
-  final productJson = {
-    'id': 1,
-    'name': 'Test Product',
-    'description': 'This is a test product',
-    'price': 49.99,
-    'imageUrl': 'https://example.com/image.jpg',
-  };
+  final productMap = json.decode(productJson) as Map<String, dynamic>;
 
-  test('fromJson should return a valid model', () {
-    final result = ProductModel.fromJson(productJson);
-    expect(result, equals(productModel));
-  });
+  group('ProductModel', () {
+    test('fromJson returns correct ProductModel', () {
+      final model = ProductModel.fromJson(productMap);
 
-  test('toJson should return a valid map', () {
-    final result = productModel.toJson();
-    expect(result, equals(productJson));
+      expect(model.id, '1');
+      expect(model.name, 'Product Name');
+      expect(model.description, 'This is a sample product description.');
+      expect(model.price, 29.99);
+      expect(model.imageUrl, 'https://example.com/product-image.jpg');
+    });
+
+    test('toJson returns correct map', () {
+      final model = ProductModel.fromJson(productMap);
+      final jsonMap = model.toJson();
+
+      expect(jsonMap, productMap);
+    });
+
+    test('toJson and fromJson are symmetric', () {
+      final model = ProductModel.fromJson(productMap);
+      final jsonMap = model.toJson();
+      final modelFromJson = ProductModel.fromJson(jsonMap);
+
+      expect(modelFromJson.id, model.id);
+      expect(modelFromJson.name, model.name);
+      expect(modelFromJson.description, model.description);
+      expect(modelFromJson.price, model.price);
+      expect(modelFromJson.imageUrl, model.imageUrl);
+    });
   });
 }

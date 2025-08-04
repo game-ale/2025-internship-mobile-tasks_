@@ -4,93 +4,92 @@ import 'package:ecommerce_app/core/error/exceptions.dart';
 import 'package:ecommerce_app/features/products/data/datasources/product_local_data_source.dart';
 import 'package:ecommerce_app/features/products/data/models/product_model.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../fixtures/fixture_reader.dart';
+
 class MockSharedPreferences extends Mock implements SharedPreferences {}
-  void main() {
-    late ProductLocalDataSourceImpl dataSource;
-    late MockSharedPreferences mockSharedPreferences;
 
-    setUp(() {
-      mockSharedPreferences = MockSharedPreferences();
-      dataSource = ProductLocalDataSourceImpl(
-        sharedPreferences: mockSharedPreferences,
-      );
-    });
+void main() {
+  late ProductLocalDataSourceImpl dataSource;
+  late MockSharedPreferences mockSharedPreferences;
 
-    final tProductModel = ProductModel(
-      id: 1,
-      name: 'Test Product',
-      description: 'Description',
-      price: 99.99,
-      imageUrl: 'http://example.com/image.png',
-    );
+  setUp(() {
+    mockSharedPreferences = MockSharedPreferences();
+    dataSource = ProductLocalDataSourceImpl(mockSharedPreferences);
+  });
+  final cachedProductsJson = fixture('cached_products');
+  final cachedProductsList = (List<Map<String, dynamic>>.from(
+    json.decode(cachedProductsJson) as List,
+  )).map((json) => ProductModel.fromJson(json)).toList();
 
-    final tProductModelList = [tProductModel];
-    final tProductJsonString = json.encode(
-      tProductModelList.map((e) => e.toJson()).toList(),
-    );
-
-    group('cacheProducts', () {
-      test('should call SharedPreferences to cache the data', () async {
-        // act
-        await dataSource.cacheProducts(tProductModelList);
-        // assert
-        verify(mockSharedPreferences.setString(any as String, tProductJsonString));
-        // null cant assinged to string
-      });
-    });
-
-    group('getCachedProducts', () {
-      test('should return List<Product> when there is data in cache', () async {
-        // arrange
+  group('getAllCachedProducts', () {
+    test(
+      'should return a list of ProductModel from SharedPreferences',
+      () async {
         when(
-          mockSharedPreferences.getString(any as String),
-        ).thenReturn(tProductJsonString);
-        // act
-        final result = await dataSource.getCachedProducts();
-        // assert
-        expect(result, equals(tProductModelList));
-      });
+          () => mockSharedPreferences.getString(any()),
+        ).thenReturn(cachedProductsJson);
 
-      test(
-        'should throw CacheException when there is no cached data',
-        () async {
-          // arrange
-          when(mockSharedPreferences.getString(any as String)).thenReturn(null);
-          // act
-          final call = dataSource.getCachedProducts;
-          // assert
-          expect(() => call(), throwsA(isA<CacheException>()));
-        },
+        final result = await dataSource.getAllCachedProducts();
+        verify(() => mockSharedPreferences.getString(cachedProducts));
+        expect(result, isA<List<ProductModel>>());
+        expect(result.length, cachedProductsList.length);
+      },
+    );
+    test('should throw CacheExeption when there is no cached data', () async {
+      when(() => mockSharedPreferences.getString(any())).thenReturn(null);
+
+      final call = dataSource.getAllCachedProducts();
+
+      expect(() => call, throwsA(const TypeMatcher<CacheException>()));
+    });
+  });
+  group('getCachedProductById', () {
+    final tProductId = '1';
+    final tProductModel = cachedProductsList.firstWhere(
+      (product) => product.id == tProductId,
+    );
+
+    test('should return ProductModel when the id matches', () async {
+      when(
+        () => mockSharedPreferences.getString(any()),
+      ).thenReturn(cachedProductsJson);
+
+      final result = await dataSource.getCachedProductById(tProductId);
+      verify(() => mockSharedPreferences.getString(cachedProducts));
+      expect(result, equals(tProductModel));
+    });
+
+    test('should throw CacheException when no product is found', () async {
+      when(
+        () => mockSharedPreferences.getString(any()),
+      ).thenReturn(cachedProductsJson);
+
+      final call = dataSource.getCachedProductById('999'); // Non-existent ID
+
+      expect(() => call, throwsA(const TypeMatcher<CacheException>()));
+    });
+  });
+
+  group('cacheAllProducts', () {
+    final tProductModelList = cachedProductsList;
+    test('should call SharedPreferences to cache the data', () async {
+      final expectedJsonString = json.encode(
+        tProductModelList.map((product) => product.toJson()).toList(),
+      );
+      // arrange
+      when(
+        () => mockSharedPreferences.setString(any(), any()),
+      ).thenAnswer((_) async => true);
+      // act
+      await dataSource.cacheAllProduct(cachedProductsList);
+      // assert
+      verify(
+        () =>
+            mockSharedPreferences.setString(cachedProducts, expectedJsonString),
       );
     });
-
-    group('clearCache', () {
-      test('should call SharedPreferences to remove cached data', () async {
-        // act
-        await dataSource.clearCache();
-        // assert
-        verify(mockSharedPreferences.remove(any as String));
-      });
-    });
-
-    group('getLastProducts', () {
-      test(
-        'should return the last 1 product (same as cached in this case)',
-        () async {
-          // arrange
-          when(
-            mockSharedPreferences.getString(any as String),
-          ).thenReturn(tProductJsonString);
-          // act
-          final result = await dataSource.getLastProducts();
-          // assert
-          expect(result.length, 1);
-          expect(result.first, equals(tProductModel));
-        },
-      );
-    });
-  }
-
+  });
+}

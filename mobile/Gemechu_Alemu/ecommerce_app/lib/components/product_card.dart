@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-//import 'package:task6/constants.dart';
-import 'package:task7/common/themes/text_styles.dart';
-//import 'package:task6/common/themes/app_colors.dart';
-import 'package:task7/pages/details_page.dart';
+import 'package:ecommerce_app/common/themes/text_styles.dart';
+
+import 'package:ecommerce_app/pages/details_page.dart';
 import 'package:task7/components/product_category.dart';
 import '../product_models/product.dart';
 

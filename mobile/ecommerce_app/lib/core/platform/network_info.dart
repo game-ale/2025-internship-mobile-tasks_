@@ -1,21 +1,12 @@
-import 'package:data_connection_checker_nulls/data_connection_checker_nulls.dart';
-
-import '../error/exceptions.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 abstract class NetworkInfo {
   Future<bool> get isConnected;
 }
 
 class NetworkInfoImpl implements NetworkInfo {
-  final DataConnectionChecker dataConnectionChecker;
-  NetworkInfoImpl(this.dataConnectionChecker);
+  final InternetConnectionChecker connectionChecker;
+  NetworkInfoImpl(this.connectionChecker);
   @override
-  Future<bool> get isConnected async {
-    final isConnected = await dataConnectionChecker.hasConnection;
-    if (!isConnected) {
-      throw NetworkException();
-
-    }
-    return  isConnected;
-  }
+  Future<bool> get isConnected => connectionChecker.hasConnection;
 }

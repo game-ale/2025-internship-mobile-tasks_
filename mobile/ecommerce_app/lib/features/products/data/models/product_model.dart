@@ -1,7 +1,7 @@
 import '../../domain/entities/product.dart';
 
 class ProductModel extends Product {
-  const ProductModel({
+  ProductModel({
     required super.id,
     required super.name,
     required super.description,
@@ -27,16 +27,34 @@ class ProductModel extends Product {
       'price': price,
       'imageUrl': imageUrl,
     };
-  
   }
-  factory ProductModel.fromEntity(Product product) {
-  return ProductModel(
-    id: product.id,
-    name: product.name,
-    description: product.description,
-    price: product.price,
-    imageUrl: product.imageUrl,
-  );
-}
 
+  static ProductModel fromEntity(Product product) {
+    return ProductModel(
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      imageUrl: product.imageUrl,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProductModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          description == other.description &&
+          price == other.price &&
+          imageUrl == other.imageUrl;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      description.hashCode ^
+      price.hashCode ^
+      imageUrl.hashCode;
 }

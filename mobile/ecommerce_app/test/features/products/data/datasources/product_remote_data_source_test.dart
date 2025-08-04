@@ -5,136 +5,265 @@ import 'package:ecommerce_app/features/products/data/datasources/product_remote_
 import 'package:ecommerce_app/features/products/data/models/product_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
-import 'product_remote_data_source_test.mocks.dart';
+import '../../../../fixtures/fixture_reader.dart';
 
-@GenerateMocks([http.Client])
+class MockHttpClient extends Mock implements http.Client {}
+
 void main() {
   late ProductRemoteDataSourceImpl dataSource;
-  late MockClient mockHttpClient;
+  late MockHttpClient mockHttpClient;
 
-  const tId = 1;
-  const baseUrl = 'https://your.api.com/products';
-
-  final tProductJson = {
-    "id": 1,
-    "name": "Test Product",
-    "description": "A great item",
-    "price": 9.99,
-    "imageUrl": "https://example.com/image.jpg"
-  };
-
-  final tProductModel = ProductModel.fromJson(tProductJson);
-  final tProductModelList = [tProductModel];
-
-  setUp(() {
-    mockHttpClient = MockClient();
+  setUp(() async {
+    mockHttpClient = MockHttpClient();
     dataSource = ProductRemoteDataSourceImpl(client: mockHttpClient);
+    registerFallbackValue(Uri.parse('https://example.com/api'));
   });
+
+  void setUpMockHttpClientSuccess200() {
+    when(
+      () => mockHttpClient.get(any(), headers: any(named: 'headers')),
+    ).thenAnswer((_) async => http.Response(fixture('products'), 200));
+  }
+
+  void setUpMockHttpClientFailure404() {
+    when(
+      () => mockHttpClient.get(any(), headers: any(named: 'headers')),
+    ).thenAnswer((_) async => http.Response('something went wrong', 404));
+  }
+
+  final productJson = fixture('product');
 
   group('getAllProducts', () {
-    test('should return List<ProductModel> on 200 OK', () async {
-      when(mockHttpClient.get(
-        Uri.parse(baseUrl),
-        headers: {'Content-Type': 'application/json'},
-      )).thenAnswer((_) async => http.Response(json.encode([tProductJson]), 200));
+    final tProductList = (json.decode(fixture('products'))['data'] as List)
+        .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
+        .toList();
+    test('should perform a GET request on a URL', () async {
+      //arrange
+      setUpMockHttpClientSuccess200();
+      //act
+      dataSource.getAllProducts();
+      //assert
+      verify(
+        () => mockHttpClient.get(
+          Uri.parse(
+            'https://g5-flutter-learning-path-be.onrender.com/api/v3/products',
+          ),
+          headers: {'Content-Type': 'application/json'},
+        ),
+      );
+    });
 
+    test('should return product model when the response code is 200', () async {
+      //arrange
+      setUpMockHttpClientSuccess200();
+      //act
       final result = await dataSource.getAllProducts();
-
-      expect(result, equals(tProductModelList));
+      //assert
+      expect(result, equals(tProductList));
     });
-
-    test('should throw ServerException on non-200', () async {
-      when(mockHttpClient.get(any, headers: anyNamed('headers')))
-          .thenAnswer((_) async => http.Response('Error', 404));
-
-      expect(() => dataSource.getAllProducts(), throwsA(isA<ServerException>()));
-    });
+    test(
+      'should throw a server exception when the response code is 404 or other',
+      () async {
+        //arrange
+        setUpMockHttpClientFailure404();
+        //act
+        final call = dataSource.getAllProducts;
+        //assert
+        expect(() => call(), throwsA(const TypeMatcher<ServerException>()));
+      },
+    );
   });
 
+  void setUpMockHttpClientSuccessId200() {
+    when(
+      () => mockHttpClient.get(any(), headers: any(named: 'headers')),
+    ).thenAnswer((_) async => http.Response(fixture('product'), 200));
+  }
+
   group('getProductById', () {
-    test('should return ProductModel on 200 OK', () async {
-      when(mockHttpClient.get(
-        Uri.parse('$baseUrl/$tId'),
-        headers: {'Content-Type': 'application/json'},
-      )).thenAnswer((_) async => http.Response(json.encode(tProductJson), 200));
-
-      final result = await dataSource.getProductById(tId);
-
-      expect(result, equals(tProductModel));
+    final tProduct = ProductModel.fromJson(
+      jsonDecode(productJson)['data'] as Map<String, dynamic>,
+    );
+    test('should perform a GET request on a URL', () async {
+      //arrange
+      setUpMockHttpClientSuccessId200();
+      //act
+      dataSource.getProductById('1');
+      //assert
+      verify(
+        () => mockHttpClient.get(
+          Uri.parse(
+            'https://g5-flutter-learning-path-be.onrender.com/api/v3/products/1',
+          ),
+          headers: {'Content-Type': 'application/json'},
+        ),
+      );
     });
 
-    test('should throw ServerException on error', () async {
-      when(mockHttpClient.get(any, headers: anyNamed('headers')))
-          .thenAnswer((_) async => http.Response('Error', 500));
-
-      expect(() => dataSource.getProductById(tId), throwsA(isA<ServerException>()));
+    test('should return product model when the response code is 200', () async {
+      //arrange
+      setUpMockHttpClientSuccessId200();
+      //act
+      final result = await dataSource.getProductById('1');
+      //assert
+      expect(result, equals(tProduct));
     });
+    test(
+      'should throw a server exception when the response code is 404 or other',
+      () async {
+        //arrange
+        setUpMockHttpClientFailure404();
+        //act
+        final call = dataSource.getProductById;
+        //assert
+        expect(() => call('1'), throwsA(const TypeMatcher<ServerException>()));
+      },
+    );
   });
 
   group('createProduct', () {
-    test('should POST and return void on 201 Created', () async {
-      when(mockHttpClient.post(
-        Uri.parse(baseUrl),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(tProductModel.toJson()),
-      )).thenAnswer((_) async => http.Response('', 201));
-
-      final result = await dataSource.createProduct(tProductModel);
-      expectLater(dataSource.createProduct(tProductModel), completes);
-
+    test('should post product request on URL', () async {
+      //arrange
+      when(
+        () => mockHttpClient.post(
+          any(),
+          headers: any(named: 'headers'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer((_) async => http.Response(productJson, 201));
+      //act
+      final result = await dataSource.createProduct(
+        ProductModel.fromJson(
+          jsonDecode(productJson)['data'] as Map<String, dynamic>,
+        ),
+      );
+      //assert
+      verify(
+        () => mockHttpClient.post(
+          Uri.parse(
+            'https://g5-flutter-learning-path-be.onrender.com/api/v3/products',
+          ),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(
+            ProductModel.fromJson(
+              jsonDecode(productJson)['data'] as Map<String, dynamic>,
+            ),
+          ),
+        ),
+      );
+      expect(result, productJson);
     });
-
-    test('should throw ServerException on non-201', () async {
-      when(mockHttpClient.post(any,
-              headers: anyNamed('headers'), body: anyNamed('body')))
-          .thenAnswer((_) async => http.Response('Error', 400));
-
-      expect(() => dataSource.createProduct(tProductModel), throwsA(isA<ServerException>()));
-    });
-  });
-
-  group('updateProduct', () {
-    test('should PUT and return void on 200 OK', () async {
-      when(mockHttpClient.put(
-        Uri.parse('$baseUrl/${tProductModel.id}'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(tProductModel.toJson()),
-      )).thenAnswer((_) async => http.Response('', 200));
-
-      final result = await dataSource.updateProduct(tProductModel);
-
-      expectLater(dataSource.updateProduct(tProductModel), completes);
-
-    
-    });
-
-    test('should throw ServerException on non-200', () async {
-      when(mockHttpClient.put(any,
-              headers: anyNamed('headers'), body: anyNamed('body')))
-          .thenAnswer((_) async => http.Response('Error', 500));
-
-      expect(() => dataSource.updateProduct(tProductModel), throwsA(isA<ServerException>()));
+    test('should return server exception if uncessfull', () async {
+      //arrange
+      when(
+        () => mockHttpClient.post(
+          any(),
+          headers: any(named: 'headers'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer((_) async => http.Response('Error', 400));
+      //act
+      final call = dataSource.createProduct;
+      //assert
+      expect(
+        () => call(
+          ProductModel.fromJson(
+            jsonDecode(productJson)['data'] as Map<String, dynamic>,
+          ),
+        ),
+        throwsA(const TypeMatcher<ServerException>()),
+      );
     });
   });
 
   group('deleteProduct', () {
-    test('should perform DELETE request and return void on 204', () async {
-      when(mockHttpClient.delete(Uri.parse('$baseUrl/$tId'),
-              headers: anyNamed('headers')))
-          .thenAnswer((_) async => http.Response('', 204));
-
-      final result = await dataSource.deleteProduct(tId);
-;
+    test('should perform a DELETE request on a URL', () async {
+      //arrange
+      when(
+        () => mockHttpClient.delete(any(), headers: any(named: 'headers')),
+      ).thenAnswer((_) async => http.Response('', 204));
+      //act
+      await dataSource.deleteProduct('1');
+      //assert
+      verify(
+        () => mockHttpClient.delete(
+          Uri.parse(
+            'https://g5-flutter-learning-path-be.onrender.com/api/v3/products/1',
+          ),
+          headers: {'Content-Type': 'application/json'},
+        ),
+      );
     });
 
-    test('should throw ServerException on non-200/204', () async {
-      when(mockHttpClient.delete(any, headers: anyNamed('headers')))
-          .thenAnswer((_) async => http.Response('Error', 500));
+    test(
+      'should throw a server exception when the response code is not 204',
+      () async {
+        //arrange
+        when(
+          () => mockHttpClient.delete(any(), headers: any(named: 'headers')),
+        ).thenAnswer((_) async => http.Response('Error', 404));
+        //act
+        final call = dataSource.deleteProduct;
+        //assert
+        expect(() => call('1'), throwsA(const TypeMatcher<ServerException>()));
+      },
+    );
+  });
 
-      expect(() => dataSource.deleteProduct(tId), throwsA(isA<ServerException>()));
+  group('updateProduct', () {
+    test('should perform a PUT request on a URL', () async {
+      //arrange
+      when(
+        () => mockHttpClient.put(
+          any(),
+          headers: any(named: 'headers'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer((_) async => http.Response(productJson, 200));
+      //act
+      await dataSource.updateProduct(
+        ProductModel.fromJson(
+          jsonDecode(productJson)['data'] as Map<String, dynamic>,
+        ),
+      );
+      //assert
+      verify(
+        () => mockHttpClient.put(
+          Uri.parse(
+            'https://g5-flutter-learning-path-be.onrender.com/api/v3/products/${ProductModel.fromJson(jsonDecode(productJson)['data'] as Map<String, dynamic>).id}',
+          ),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(
+            ProductModel.fromJson(
+              jsonDecode(productJson)['data'] as Map<String, dynamic>,
+            ),
+          ),
+        ),
+      );
+    });
+
+    test('should return server exception if unsuccessful', () async {
+      //arrange
+      when(
+        () => mockHttpClient.put(
+          any(),
+          headers: any(named: 'headers'),
+          body: any(named: 'body'),
+        ),
+      ).thenAnswer((_) async => http.Response('Error', 400));
+      //act
+      final call = dataSource.updateProduct;
+      //assert
+      expect(
+        () => call(
+          ProductModel.fromJson(
+            jsonDecode(productJson)['data'] as Map<String, dynamic>,
+          ),
+        ),
+        throwsA(const TypeMatcher<ServerException>()),
+      );
     });
   });
 }

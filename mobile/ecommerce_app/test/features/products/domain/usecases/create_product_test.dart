@@ -1,40 +1,91 @@
 import 'package:dartz/dartz.dart';
+import 'package:ecommerce_app/core/error/failures.dart';
 import 'package:ecommerce_app/features/products/domain/entities/product.dart';
 import 'package:ecommerce_app/features/products/domain/repositories/product_repository.dart';
 import 'package:ecommerce_app/features/products/domain/usecases/create_product.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
-
+/// Simulated ProductRepository used for testing with mocktail
 class MockProductRepository extends Mock implements ProductRepository {}
 
 void main() {
+  // Required test variables
   late CreateProductUsecase usecase;
-  late MockProductRepository mockProductRepository;
+  late MockProductRepository mockRepository;
+
+  // Used as a default fallback input when mocktail needs a Product
+  final fallbackProduct = Product(
+    id: '0',
+    name: '',
+    price: 0.0,
+    description: '',
+    imageUrl: '',
+  );
 
   setUp(() {
-    mockProductRepository = MockProductRepository();
-    usecase = CreateProductUsecase(mockProductRepository);
+    // Setup fresh instances before each test case
+    mockRepository = MockProductRepository();
+    usecase = CreateProductUsecase(mockRepository);
+
+    // Register default object in case mocktail requires it
+    registerFallbackValue(fallbackProduct);
   });
 
   group('CreateProductUsecase', () {
-    final newProduct = const Product(
-      id: 2,
-      name: 'New Sneakers',
-      description: 'A brand new sneaker model',
-      price: 129.99,
-      imageUrl: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.daily.co%2Fblog%2Fusing-flutter-for-cross-platform-video-application-development%2F&psig=AOvVaw0Fs42TVAznBJ0c9tUVbLLi&ust=1753863978663000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCIC5ktHS4Y4DFQAAAAAdAAAAABAE',
+    test(
+      'calls createProduct on the repository and succeeds with a Right when no error occurs',
+      () async {
+        // Test data setup
+        final product = Product(
+          id: '1',
+          name: 'Test Product',
+          price: 10.0,
+          description: 'A test product',
+          imageUrl: 'http://example.com/test.jpg',
+        );
+
+        // Configure mock to return a successful response
+        when(
+          () => mockRepository.createProduct(product),
+        ).thenAnswer((_) async => const Right<Failure, void>(null));
+
+        // Execute the usecase
+        await usecase.call(product);
+
+        // Validate that repository method was invoked as expected
+        verify(() => mockRepository.createProduct(product)).called(1);
+        verifyNoMoreInteractions(mockRepository);
+      },
     );
 
-    test('should create product successfully', () async {
-      when(mockProductRepository.createProduct(newProduct))
-          .thenAnswer((_) async => Right(newProduct));
+    test(
+      'returns Left with ServerFailure when repository throws an error',
+      () async {
+        // Input for the test case
+        final product = Product(
+          id: '2',
+          name: 'Invalid Product',
+          price: 20.0,
+          description: 'An error product',
+          imageUrl: 'http://example.com/error.jpg',
+        );
 
-      final result = await usecase(newProduct);
+        final failure = const ServerFailure('Failed to create product');
 
-      expect(result, Right(newProduct));
-      verify(mockProductRepository.createProduct(newProduct)).called(1);
-      verifyNoMoreInteractions(mockProductRepository);
-    });
+        // Configure mock to simulate an error
+        when(
+          () => mockRepository.createProduct(product),
+        ).thenAnswer((_) async => Left(failure));
+
+        // Run the usecase with failing scenario
+        final result = await usecase.call(product);
+
+        // Check if failure is returned and interactions are verified
+        expect(result, equals(Left(failure)));
+        verify(() => mockRepository.createProduct(product)).called(1);
+        verifyNoMoreInteractions(mockRepository);
+      },
+    );
   });
 }

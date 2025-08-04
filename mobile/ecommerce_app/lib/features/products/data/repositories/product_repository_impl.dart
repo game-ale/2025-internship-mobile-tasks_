@@ -18,92 +18,94 @@ class ProductRepositoryImpl implements ProductRepository {
     required this.localDataSource,
     required this.networkInfo,
   });
-
   @override
-  Future<Either<Failure, List<Product>>> getAllProducts() async {
-    if (await networkInfo.isConnected) {
-      try {
-        final remoteProducts = await remoteDataSource.getAllProducts();
-        await localDataSource.cacheProducts(remoteProducts);
-        return Right(remoteProducts);
-      } catch (e) {
-        return const Left(ServerFailure('Server error'));
+  Future<Either<Failure, void>> createProduct(Product product) {
+    return networkInfo.isConnected.then((isConnected) async {
+      if (isConnected) {
+        try {
+          await remoteDataSource.createProduct(
+            ProductModel.fromEntity(product),
+          );
+          return const Right(null);
+        } catch (e) {
+          return const Left(ServerFailure('Failed to create product'));
+        }
+      } else {
+        return const Left(NetworkFailure('No internet connection'));
       }
-    } else {
-      try {
-        final cachedProducts = await localDataSource.getCachedProducts();
-        return Right(cachedProducts);
-      } catch (e) {
-        return const Left(CacheFailure('No cached products available'));
-      }
-    }
+    });
   }
 
   @override
-  Future<Either<Failure, Product>> getProductById(int id) async {
-    if (await networkInfo.isConnected) {
-      try {
-        final product = await remoteDataSource.getProductById(id);
-        await localDataSource.cacheProduct(product);
-        return Right(product);
-      } catch (e) {
-        return const Left(ServerFailure('Server error while fetching product'));
-      }
-    } else {
-      try {
-        final product = await localDataSource.getProductById(id);
-        return Right(product);
-      } catch (e) {
-        return const Left(CacheFailure('No cached product found'));
-      }
-    }
-  }
-
-  @override
-  Future<Either<Failure, Product>> createProduct(Product product) async {
-    if (await networkInfo.isConnected) {
-      try {
-        final model = ProductModel.fromEntity(product);
-        await remoteDataSource.createProduct(model);
-        await localDataSource.cacheProduct(model);
-        return Right(model);
-      } catch (e) {
-        return const Left(ServerFailure('Failed to create product'));
-      }
-    } else {
-      return const Left(ServerFailure('No internet connection'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, Product>> updateProduct(Product product) async {
-    if (await networkInfo.isConnected) {
-      try {
-        final model = ProductModel.fromEntity(product);
-        await remoteDataSource.updateProduct(model);
-        await localDataSource.cacheProduct(model);
-        return Right(model);
-      } catch (e) {
-        return const Left(ServerFailure('Failed to update product'));
-      }
-    } else {
-      return const Left(ServerFailure('No internet connection'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, Unit>> deleteProduct(int id) async {
-    // (failure , unit) is not override (failure ,product)
+  Future<Either<Failure, void>> deleteProduct(String id) async {
     if (await networkInfo.isConnected) {
       try {
         await remoteDataSource.deleteProduct(id);
-        await localDataSource.clearCache();
-        return const Right(unit); // Return Unit instead of Product
+        return const Right(null);
       } catch (e) {
         return const Left(ServerFailure('Failed to delete product'));
       }
     } else {
-      return const Left(ServerFailure('No internet connection'));
+      return const Left(NetworkFailure('No internet connection'));
     }
+  }
+
+  @override
+  Future<Either<Failure, List<ProductModel>>> getAllProducts() async {
+    try {
+      if (await networkInfo.isConnected) {
+        final products = await remoteDataSource.getAllProducts();
+        localDataSource.cacheAllProduct(products);
+        return Right(products);
+      } else {
+        try {
+          final products = await localDataSource.getAllCachedProducts();
+          return Right(products);
+        } catch (e) {
+          return const Left(CacheFailure('No cached data'));
+        }
+      }
+    } catch (e) {
+      return const Left(ServerFailure('Failed to fetch products'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ProductModel>> getProductById(String id) {
+    return networkInfo.isConnected.then((isConnected) async {
+      if (isConnected) {
+        try {
+          final product = await remoteDataSource.getProductById(id);
+          return Right(product);
+        } catch (e) {
+          return const Left(ServerFailure('Failed to fetch product'));
+        }
+      } else {
+        try {
+          final product = await localDataSource.getCachedProductById(id);
+          return Right(product);
+        } catch (e) {
+          return const Left(CacheFailure('Product not found in cache'));
+        }
+      }
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> updateProduct(Product product) {
+    return networkInfo.isConnected.then((isConnected) async {
+      if (isConnected) {
+        try {
+          await remoteDataSource.updateProduct(
+            ProductModel.fromEntity(product),
+          );
+          return const Right(null);
+        } catch (e) {
+          return const Left(ServerFailure('Failed to update product'));
+        }
+      } else {
+        return const Left(NetworkFailure('No internet connection'));
+      }
+    });
   }
 }

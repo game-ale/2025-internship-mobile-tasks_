@@ -3,11 +3,12 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../repositories/product_repository.dart';
 
-class DeleteProductUsecase  {
+class DeleteProductUsecase {
   final ProductRepository repository;
-  const DeleteProductUsecase(this.repository);
 
-  Future<Either<Failure, Unit>> call(int id) {
-    return repository.deleteProduct(id);
+  DeleteProductUsecase(this.repository);
+
+  Future<Either<Failure, void>> call(String id) async {
+    return await repository.deleteProduct(id);
   }
 }
