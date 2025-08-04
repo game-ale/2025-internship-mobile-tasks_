@@ -1,13 +1,12 @@
 import 'dart:convert';
 
+import 'package:ecommerce_app/core/error/exceptions.dart';
+import 'package:ecommerce_app/features/products/data/datasources/product_remote_data_source.dart';
+import 'package:ecommerce_app/features/products/data/models/product_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-
-import 'package:ecommerce_app/features/products/data/datasources/product_remote_data_source.dart';
-import 'package:ecommerce_app/features/products/data/models/product_model.dart';
-import 'package:ecommerce_app/core/error/exceptions.dart';
 
 import 'product_remote_data_source_test.mocks.dart';
 

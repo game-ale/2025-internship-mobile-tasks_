@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/usecases/usecase.dart';
+
 import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
 import '../entities/product.dart';
 import '../repositories/product_repository.dart';
 
