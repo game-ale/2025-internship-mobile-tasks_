@@ -3,12 +3,13 @@ import '../../../../core/error/failures.dart';
 import '../entities/product.dart';
 import '../repositories/product_repository.dart';
 
-class ViewAllProductsUsecase {
-  final ProductRepository repository;
+class VeiwAllProductUseCase {
+  final ProductRepository _productRepository;
 
-  ViewAllProductsUsecase(this.repository);
-
-  Future<Either<Failure, List<Product>>> call() {
-    return repository.getAllProducts();
+  VeiwAllProductUseCase({required ProductRepository productRepository})
+      : _productRepository = productRepository;
+  Future<Either<Failure, List<Product>>> execute() {
+    return _productRepository.getAllProduct();
   }
 }
+
