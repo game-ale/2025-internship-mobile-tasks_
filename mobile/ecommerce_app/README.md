@@ -1,44 +1,83 @@
-# Ecommerce Flutter App — Clean Architecture
-This project is a sample Ecommerce app built using Flutter and structured following Clean Architecture principles. It demonstrates how to organize your codebase with:
+This task is part of the Ecommerce app development using Flutter and Clean Architecture (TDD). The goal is to implement the ProductRepositoryImpl class and write tests to verify its behavior.
 
-Contracts (Abstract classes/interfaces)
+📌 Requirements
+Implement repository contract from the domain layer.
 
-Repository pattern
+Use local datasource when the network is unavailable.
 
-Local & Remote Data Sources
+Use remote datasource when the network is available.
 
-Dependency Inversion
+Write tests for ProductRepositoryImpl.
 
-Network connection checking
+Push the implementation to GitHub and submit the link.
 
-## Architecture Layers
-### domain/
-Defines the contracts and business logic.
+🛠️ Implementation
+ProductRepositoryImpl: Implements all repository logic.
 
-entities/ – Plain Dart classes for your core objects (Product).
+Local Data Source: Returns cached data if offline.
 
-repositories/ – Abstract class (contract) defining the required repository methods.
+Remote Data Source: Fetches data from API if online.
 
-usecases/ – Classes for business rules (e.g., GetAllProductsUseCase).
+Tests: Unit tests to validate repository behavior.
 
-### data/
-Contains data sources, models, and the implementation of the repository.
+## 📁 Project Structure
 
-datasources/
+```
+┣ 📂core
+┃ ┣ 📂errors
+┃ ┃ ┣ 📜exceptions.dart
+┃ ┃ ┗ 📜failures.dart
+┃ ┗ 📂network
+┃   ┗ 📜network_info.dart
+┣ 📂features
+┃ ┗ 📂product
+┃   ┣ 📂data
+┃   ┃ ┣ 📂data_sources
+┃   ┃ ┃ ┣ 📂local
+┃   ┃ ┃ ┃ ┗ 📜local_data_source.dart
+┃   ┃ ┃ ┗ 📂remote
+┃   ┃ ┃   ┗ 📜remote_data_source.dart
+┃   ┃ ┣ 📂models
+┃   ┃ ┃ ┗ 📜product_model.dart
+┃   ┃ ┗ 📂repositories
+┃   ┃   ┗ 📜product_repository_impl.dart
+┃   ┗ 📂domain
+┃     ┣ 📂entities
+┃     ┃ ┗ 📜product.dart
+┃     ┣ 📂repositories
+┃     ┃ ┗ 📜product_repository.dart
+┃     ┗ 📂usecases
+┃       ┣ 📜delete_product.dart
+┃       ┣ 📜get_all_products.dart
+┃       ┣ 📜get_product.dart
+┃       ┣ 📜insert_product.dart
+┃       ┗ 📜update_product.dart
+┗ 📜main.dart
 
-remote_product_data_source.dart – Fetches data from APIs.
 
-local_product_data_source.dart – Fetches/saves data locally.
+```
 
-models/ – DTOs used for JSON conversion.
+```
+test
+┣ 📂features
+┃ ┗ 📂products
+┃   ┣ 📂data
+┃   ┃ ┣ 📂models
+┃   ┃ ┃ ┗ 📜product_model_test.dart
+┃   ┃ ┗ 📂repositories
+┃   ┃   ┗ 📜product_repository_impl_test.dart
+┃   ┣ 📂domain
+┃   ┃ ┗ 📂usecases
+┃   ┃   ┣ 📜create_product_test.dart
+┃   ┃   ┣ 📜delete_product_test.dart
+┃   ┃   ┣ 📜get_all_products_test.dart
+┃   ┃   ┣ 📜get_product_test.dart
+┃   ┃   ┗ 📜update_product_test.dart
+┃   ┗ 📂helpers
+┃     ┣ 📜json_reader.dart
+┃     ┣ 📜test_helper.dart
+┃     ┗ 📜test_helper.mocks.dart
+┗ 📜widget_test.dart
 
-repositories/ – Implements the contract using data sources.
 
-### core/
-platform/
-
-network_info.dart – Checks internet connection.
-
-error/
-
-exceptions.dart, failures.dart – Error handling helpers.
+```
