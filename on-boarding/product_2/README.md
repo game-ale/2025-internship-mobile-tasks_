@@ -1,17 +1,30 @@
-**Task 2: Dart Basic - Building eCommerce Application**
+# Product 2: Dart CLI eCommerce Application
 
-##  Project Structure
+This is a simple command-line based eCommerce application built with Dart as part of Task 2 in the onboarding phase.
 
-```
-product-2/
-├── bin/
-│ └── product_2.dart # Main  Command-Line Interface(CLI) logic
-├── lib/
-│ ├── product.dart # Product class (name, description, price)
-│ └── product_manager.dart # ProductManager class with all operations
-├── pubspec.yaml # Dart project configuration
-├── README.md # Project documentation
-└── test/
-└── product_2_test.dart #  Test file
+## 📦 Features
 
-```
+- Add a new product
+- View all products
+- View a single product
+- Edit a product (name, description, price)
+- Delete a product
+
+## 🧱 Structure
+
+- `Product` class: Represents each product with name, description, and price.
+- `ProductManager` class: Handles all operations like add, view, edit, and delete.
+- Code follows OOP principles including encapsulation and abstraction.
+
+## 📁 Project Location
+
+This project is located inside the `2025-project-phase-mobile-tasks/on-boarding/product-2` folder.
+
+## ✅ Requirements
+
+- Dart SDK installed
+- Run the app using:
+  
+  ```
+  dart run
+  ```
