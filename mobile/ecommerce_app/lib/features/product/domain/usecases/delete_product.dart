@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
+
+import '../../../../core/errors/failures.dart';
 import '../repositories/product_repository.dart';
 
 class DeleteProductUseCase {
@@ -8,7 +9,8 @@ class DeleteProductUseCase {
   DeleteProductUseCase({required ProductRepository productRepository})
       : _productRepository = productRepository;
 
-  Future<Either<Failure, bool>> execute(String id) {
-    return _productRepository.deleteProduct(id);
+  Future<Either<Failure, bool>> execute(String productid) {
+    return _productRepository.deleteProduct(productid);
   }
 }
+
