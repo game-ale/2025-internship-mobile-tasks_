@@ -6,15 +6,15 @@ import 'package:ecommerce_app/features/products/domain/usecases/create_product.d
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-/// Simulated ProductRepository used for testing with mocktail
+/// A mock class for the [ProductRepository] using mocktail.
 class MockProductRepository extends Mock implements ProductRepository {}
 
 void main() {
-  // Required test variables
+  // Dependencies
   late CreateProductUsecase usecase;
   late MockProductRepository mockRepository;
 
-  // Used as a default fallback input when mocktail needs a Product
+  // A fallback value for mocktail in case [any<Product>()] is used
   final fallbackProduct = Product(
     id: '0',
     name: '',
@@ -24,47 +24,45 @@ void main() {
   );
 
   setUp(() {
-    // Setup fresh instances before each test case
+    // Initialize the mock repository and the usecase before each test
     mockRepository = MockProductRepository();
     usecase = CreateProductUsecase(mockRepository);
 
-    // Register default object in case mocktail requires it
+    // Register fallback value required by mocktail for argument matchers
     registerFallbackValue(fallbackProduct);
   });
 
   group('CreateProductUsecase', () {
     test(
-      'calls createProduct on the repository and succeeds with a Right when no error occurs',
+      'should call createProduct on the repository and return Right(unit) when successful',
       () async {
-        // Test data setup
-        final product = Product(
-          id: '1',
+        // Arrange
+        final product = ProductParams(
           name: 'Test Product',
           price: 10.0,
           description: 'A test product',
           imageUrl: 'http://example.com/test.jpg',
         );
 
-        // Configure mock to return a successful response
+        // Stub the repository to return success
         when(
           () => mockRepository.createProduct(product),
         ).thenAnswer((_) async => const Right<Failure, void>(null));
 
-        // Execute the usecase
+        // Act
         await usecase.call(product);
 
-        // Validate that repository method was invoked as expected
+        // Assert
         verify(() => mockRepository.createProduct(product)).called(1);
         verifyNoMoreInteractions(mockRepository);
       },
     );
 
     test(
-      'returns Left with ServerFailure when repository throws an error',
+      'should return Left(ServerFailure) when repository fails to create product',
       () async {
-        // Input for the test case
-        final product = Product(
-          id: '2',
+        // Arrange
+        final product = ProductParams(
           name: 'Invalid Product',
           price: 20.0,
           description: 'An error product',
@@ -73,15 +71,15 @@ void main() {
 
         final failure = const ServerFailure('Failed to create product');
 
-        // Configure mock to simulate an error
+        // Stub the repository to return failure
         when(
           () => mockRepository.createProduct(product),
         ).thenAnswer((_) async => Left(failure));
 
-        // Run the usecase with failing scenario
+        // Act
         final result = await usecase.call(product);
 
-        // Check if failure is returned and interactions are verified
+        // Assert
         expect(result, equals(Left(failure)));
         verify(() => mockRepository.createProduct(product)).called(1);
         verifyNoMoreInteractions(mockRepository);
