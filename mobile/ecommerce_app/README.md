@@ -27,10 +27,10 @@ This project follows the **Clean Architecture** pattern to divide responsibiliti
 ```bash
 lib
 ┣ 📂core
-┃ ┗ 📂error
-┃   ┗ 📜failure.dart
+┃ ┗ 📂errors
+┃   ┗ 📜failures.dart
 ┣ 📂features
-┃ ┗ 📂products
+┃ ┗ 📂product
 ┃   ┣ 📂data
 ┃   ┃ ┗ 📂models
 ┃   ┃   ┗ 📜product_model.dart
@@ -40,11 +40,11 @@ lib
 ┃     ┣ 📂repositories
 ┃     ┃ ┗ 📜product_repository.dart
 ┃     ┗ 📂usecases
-┃       ┣ 📜create_product.dart
 ┃       ┣ 📜delete_product.dart
-┃       ┣ 📜update_product.dart
-┃       ┣ 📜view_all_products.dart
-┃       ┗ 📜view_specific_product.dart
+┃       ┣ 📜get_all_products.dart
+┃       ┣ 📜get_product.dart
+┃       ┣ 📜insert_product.dart
+┃       ┗ 📜update_product.dart
 ┗ 📜main.dart
 ```
 
@@ -56,14 +56,16 @@ test
 ┃   ┣ 📂data
 ┃   ┃ ┗ 📂models
 ┃   ┃   ┗ 📜product_model_test.dart
-┃   ┗ 📂domain
-┃     ┗ 📂usecases
-┃       ┣ 📜create_product_test.dart
-┃       ┣ 📜delete_product_test.dart
-┃       ┣ 📜update_product_test.dart
-┃       ┣ 📜view_all_products_test.dart
-┃       ┗ 📜view_product_test.dart
-
-┗ 📜widget_test.dart
+┃   ┣ 📂domain
+┃   ┃ ┗ 📂usecases
+┃   ┃   ┣ 📜create_product_test.dart
+┃   ┃   ┣ 📜delete_product_test.dart
+┃   ┃   ┣ 📜get_all_products_test.dart
+┃   ┃   ┣ 📜get_product_test.dart
+┃   ┃   ┗ 📜update_product_test.dart
+┃   ┗ 📂helpers
+┃     ┣ 📜json_reader.dart
+┃     ┗ 📜test_helper.dart
+┗ 📜widget_test.dar
 
 ```

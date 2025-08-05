@@ -1,35 +1,50 @@
-import 'package:dartz/dartz.dart';
-import 'package:ecommerce_app/features/products/domain/entities/product.dart';
-import 'package:ecommerce_app/features/products/domain/repositories/product_repository.dart';
-import 'package:ecommerce_app/features/products/domain/usecases/delete_product.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ecommerce_app/core/errors/failures.dart';
+import 'package:ecommerce_app/features/product/domain/repositories/product_repository.dart';
+import 'package:ecommerce_app/features/product/domain/usecases/delete_product.dart';
 
-
+// Step 1: Create a mock
 class MockProductRepository extends Mock implements ProductRepository {}
 
 void main() {
-  late DeleteProductUsecase usecase;
-  late MockProductRepository mockProductRepository;
+  late DeleteProductUseCase usecase;
+  late MockProductRepository mockRepository;
 
   setUp(() {
-    mockProductRepository = MockProductRepository();
-    usecase = DeleteProductUsecase(mockProductRepository);
+    mockRepository = MockProductRepository();
+    usecase = DeleteProductUseCase(productRepository: mockRepository);
   });
 
-  group('DeleteProductUsecase', () {
-    const productId = 1;
+  const tProductId = '123';
 
-    test('should delete product successfully', () async {
-      when(mockProductRepository.deleteProduct(productId))
-          .thenAnswer((_) async => Right(productId as Product)); 
+  test('should delete product and return true on success', () async {
+    // Arrange
+    when(() => mockRepository.deleteProduct(tProductId))
+        .thenAnswer((_) async => const Right(true));
 
-      final result = await usecase(productId);
+    // Act
+    final result = await usecase.execute(tProductId);
 
-      expect(result, Right(productId as Product));
-      verify(mockProductRepository.deleteProduct(productId)).called(1);
-      verifyNoMoreInteractions(mockProductRepository);
-    });
+    // Assert
+    expect(result, const Right(true));
+    verify(() => mockRepository.deleteProduct(tProductId)).called(1);
+    verifyNoMoreInteractions(mockRepository);
+  });
 
+  test('should return failure when delete fails', () async {
+    // Arrange
+    when(() => mockRepository.deleteProduct(tProductId))
+        .thenAnswer((_) async => Left(ServerFailure('Something went wrong')));
+
+
+    // Act
+    final result = await usecase.execute(tProductId);
+
+    // Assert
+    expect(result, Left(ServerFailure('Something went wrong')));
+    verify(() => mockRepository.deleteProduct(tProductId)).called(1);
+    verifyNoMoreInteractions(mockRepository);
   });
 }
