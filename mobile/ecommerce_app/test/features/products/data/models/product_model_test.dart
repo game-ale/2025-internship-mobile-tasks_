@@ -1,30 +1,39 @@
-import 'package:ecommerce_app/features/products/data/models/product_model.dart';
+import 'dart:convert';
+
+import 'package:ecommerce_app/features/product/data/models/product_model.dart';
+import 'package:ecommerce_app/features/product/domain/entities/product.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../../helpers/json_reader.dart';
 
 void main() {
-   var productModel = const ProductModel(
-    id: 1,
-    name: 'Test Product',
-    description: 'This is a test product',
-    price: 49.99,
-    imageUrl: 'https://example.com/image.jpg',
-  );
+  const productModel = ProductModel(
+      productid: '6672776eb905525c145fe0bb',
+      name: 'Shoe',
+      description: 'Leather Shoe',
+      price: 200,
+      imageUrl: '');
 
-  final productJson = {
-    'id': 1,
-    'name': 'Test Product',
-    'description': 'This is a test product',
-    'price': 49.99,
-    'imageUrl': 'https://example.com/image.jpg',
-  };
+  test('should be an instance of product entity', () async {
+    expect(productModel, isA<Product>());
+  });
 
-  test('fromJson should return a valid model', () {
-    final result = ProductModel.fromJson(productJson);
+  test('should map correctly', () async {
+    final Map<String, dynamic> jsonMap =
+        json.decode(readJson('features/product/helpers/product_model.json'));
+    final result = ProductModel.fromJson(jsonMap);
     expect(result, equals(productModel));
   });
 
-  test('toJson should return a valid map', () {
+  test('should map tojson correctly', () async {
     final result = productModel.toJson();
-    expect(result, equals(productJson));
+    final expectedMap = {
+      'id': '6672776eb905525c145fe0bb',
+      'name': 'Shoe',
+      'description': 'Leather Shoe',
+      'price': 200,
+      'imageUrl': ''
+    };
+
+    expect(result, equals(expectedMap));
   });
 }

@@ -7,9 +7,61 @@ Repository pattern
 
 Local & Remote Data Sources
 
-Dependency Inversion
 
-Network connection checking
+## 📁 Project Structure
+
+```bash
+lib
+┣ 📂core
+┃ ┗ 📂errors
+┃   ┣ 📜exceptions.dart
+┃   ┗ 📜failures.dart
+┣ 📂features
+┃ ┗ 📂product
+┃   ┣ 📂data
+┃   ┃ ┣ 📂data_sources
+┃   ┃ ┃ ┣ 📂local
+┃   ┃ ┃ ┃ ┗ 📜local_data_source.dart
+┃   ┃ ┃ ┗ 📂remote
+┃   ┃ ┃   ┗ 📜remote_data_source.dart
+┃   ┃ ┗ 📂models
+┃   ┃   ┗ 📜product_model.dart
+┃   ┗ 📂domain
+┃     ┣ 📂entities
+┃     ┃ ┗ 📜product.dart
+┃     ┣ 📂repositories
+┃     ┃ ┗ 📜product_repository.dart
+┃     ┗ 📂usecases
+┃       ┣ 📜delete_product.dart
+┃       ┣ 📜get_all_products.dart
+┃       ┣ 📜get_product.dart
+┃       ┣ 📜insert_product.dart
+┃       ┗ 📜update_product.dart
+┗ 📜main.dart
+
+```
+
+```bash
+test
+┣ 📂features
+┃ ┗ 📂products
+┃   ┣ 📂data
+┃   ┃ ┗ 📂models
+┃   ┃   ┗ 📜product_model_test.dart
+┃   ┣ 📂domain
+┃   ┃ ┗ 📂usecases
+┃   ┃   ┣ 📜create_product_test.dart
+┃   ┃   ┣ 📜delete_product_test.dart
+┃   ┃   ┣ 📜get_all_products_test.dart
+┃   ┃   ┣ 📜get_product_test.dart
+┃   ┃   ┗ 📜update_product_test.dart
+┃   ┗ 📂helpers
+┃     ┣ 📜json_reader.dart
+┃     ┗ 📜test_helper.dart
+┗ 📜widget_test.dart
+
+```
+
 
 ## Architecture Layers
 ### domain/
@@ -33,12 +85,3 @@ local_product_data_source.dart – Fetches/saves data locally.
 models/ – DTOs used for JSON conversion.
 
 repositories/ – Implements the contract using data sources.
-
-### core/
-platform/
-
-network_info.dart – Checks internet connection.
-
-error/
-
-exceptions.dart, failures.dart – Error handling helpers.
