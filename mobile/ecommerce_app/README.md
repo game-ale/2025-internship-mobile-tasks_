@@ -1,9 +1,38 @@
-Task 15: Implement Remote Data Source
-Implement the ProductRemoteDatasource for the Ecommerce app using Flutter and Clean Architecture.
+Implement BLoC
+Implement ProductBloc to manage product-related business logic in the Ecommerce app using the BLoC pattern and TDD.
 
-📌 Requirements
-Implement ProductRemoteDatasourceImpl (contract-based).
+📌 ***Requirements***
+ Event Classes
+LoadAllProductEvent
 
-Fetch data from API (Base URL provided).
+GetSingleProductEvent
 
-Write tests for the remote datasource.
+UpdateProductEvent
+
+DeleteProductEvent
+
+CreateProductEvent
+
+***State Classes***
+InitialState
+
+LoadingState
+
+LoadedAllProductState
+
+LoadedSingleProductState
+
+ErrorState
+
+ ***ProductBloc***
+Set initial state.
+
+Handle all events with mapEventToState.
+
+Interact with use cases (get, create, update, delete).
+
+Emit states via streams.
+
+Implement proper error handling.
+
+Write unit tests for events, states, and bloc logic.
