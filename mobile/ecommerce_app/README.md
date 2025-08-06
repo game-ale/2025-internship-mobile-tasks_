@@ -1,27 +1,9 @@
-📦 Implement Local Data Source
-This task focuses on implementing a local data source for the Ecommerce app. The local data source allows the app to store and retrieve products locally, ensuring that users can view cached data when offline or while new data is loading from the server.
+Task 15: Implement Remote Data Source
+Implement the ProductRemoteDatasource for the Ecommerce app using Flutter and Clean Architecture.
 
-🎯 Objectives
-Enable offline support by caching product data.
+📌 Requirements
+Implement ProductRemoteDatasourceImpl (contract-based).
 
-Improve app performance using locally stored data.
+Fetch data from API (Base URL provided).
 
-Keep the data layer modular and aligned with Clean Architecture principles.
-
-🚀 Requirements
-Implement the interface
-
-Create an implementation of ProductLocalDataSource.
-
-Use SharedPreferences
-
-Store and retrieve product data locally using SharedPreferences.
-
-Follow Clean Architecture
-
-Keep local data logic within the data layer.
-
-Testing
-
-Write unit tests to ensure correct behavior of caching and retrieving products.
-
+Write tests for the remote datasource.
