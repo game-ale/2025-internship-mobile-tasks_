@@ -8,6 +8,8 @@ import '../../domain/usecases/get_all_products.dart';
 import '../../domain/usecases/get_product.dart';
 import '../../domain/usecases/insert_product.dart';
 import '../../domain/usecases/update_product.dart';
+import 'package:ecommerce_app/features/product/domain/entities/product.dart';
+
 
 part 'product_bloc_event.dart';
 part 'product_bloc_state.dart';
